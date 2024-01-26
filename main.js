@@ -12,59 +12,39 @@
 (function() {
     'use strict';
 
-    // custom style to simulate <code>
-    const style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = `
-        .replace-code-tag_to-fix-edge-translator {
-            background-color: #f6f8fa;
-            border-radius: 6px;
-            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-            padding: 0.2em 0.4em;
-            font-size: 85%;
-            color: #24292e;
+    // Copy styles from one element to another
+    function copyStyles(source, target) {
+        const computedStyle = window.getComputedStyle(source);
+        for (let key of computedStyle) {
+            target.style[key] = computedStyle[key];
         }
-        
-        /* Dark mode */
-        @media (prefers-color-scheme: dark) {
-            .replace-code-tag_to-fix-edge-translator {
-                background-color: #2d333b;
-                color: #adbac7;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // create and return a styled <span> element
-    function createStyledSpan(textContent) {
-        const span = document.createElement('span');
-        span.className = 'replace-code-tag_to-fix-edge-translator';
-        span.textContent = textContent;
-        return span;
     }
 
-    // replace a single <code> tag with a styled <span>
-    function replaceCodeTag(node) {
+    // Replace a single <code> tag with a styled <span>
+    function replaceCodeToSpan(node) {
         if (node.tagName === 'CODE') {
-            const span = createStyledSpan(node.textContent);
+            const span = document.createElement('span');
+            span.textContent = node.textContent;
+            // Copy all computed styles from <code> to <span>
+            copyStyles(node, span);
             node.parentNode.replaceChild(span, node);
         }
     }
 
-    // process a node and its child for <code> tags
+    // Process a node and its child for <code> tags
     function processNodeAndChild(node) {
         if (node.nodeType === 1) {      // Element node
-            replaceCodeTag(node);
-            node.querySelectorAll('code').forEach(replaceCodeTag);
+            replaceCodeToSpan(node);
+            node.querySelectorAll('code').forEach(replaceCodeToSpan);
         }
     }
 
     ////////////////////////////////////////////////////////
 
-    // replace <code> at startup
-    document.querySelectorAll('code').forEach(replaceCodeTag);
+    // Replace <code> at startup
+    document.querySelectorAll('code').forEach(replaceCodeToSpan);
 
-    // observe DOM changes and replace generated <code> if needed
+    // Observe DOM changes and replace new-generated <code> if needed
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             mutation.addedNodes.forEach(processNodeAndChild);
