@@ -1,16 +1,16 @@
 // ==UserScript==
-// @name         Fix <code> bug of Edge translator
+// @name         Fix <code> bug for Edge translator
 // @namespace    http://tampermonkey.net/
 // @version      1.0
 // @description  Replace <code> tags with styled <span> to fix the bug of Edge's translator.
 // @author       yqs112358
 // @match        *://*/*
 // @grant        none
+// @run-at       document-end
 // ==/UserScript==
 
 (function() {
     'use strict';
-    console.log("Edge <code> bug fixer loaded.");
 
     // custom style to simulate <code>
     const style = document.createElement('style');
@@ -24,6 +24,7 @@
             font-size: 85%;
             color: #24292e;
         }
+        
         /* Dark mode */
         @media (prefers-color-scheme: dark) {
             .replace-code-tag_to-fix-edge-translator {
@@ -34,12 +35,43 @@
     `;
     document.head.appendChild(style);
 
-    document.querySelectorAll('code').forEach(function(code) {
+    // create and return a styled <span> element
+    function createStyledSpan(textContent) {
         const span = document.createElement('span');
         span.className = 'replace-code-tag_to-fix-edge-translator';
-        span.textContent = code.textContent;
+        span.textContent = textContent;
+        return span;
+    }
 
-        // replace
-        code.parentNode.replaceChild(span, code);
+    // replace a single <code> tag with a styled <span>
+    function replaceCodeTag(node) {
+        if (node.tagName === 'CODE') {
+            const span = createStyledSpan(node.textContent);
+            node.parentNode.replaceChild(span, node);
+        }
+    }
+
+    // process a node and its child for <code> tags
+    function processNodeAndChild(node) {
+        if (node.nodeType === 1) {      // Element node
+            replaceCodeTag(node);
+            node.querySelectorAll('code').forEach(replaceCodeTag);
+        }
+    }
+
+    ////////////////////////////////////////////////////////
+
+    // replace <code> at startup
+    document.querySelectorAll('code').forEach(replaceCodeTag);
+
+    // observe DOM changes and replace generated <code> if needed
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(processNodeAndChild);
+        });
+    });
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 })();
