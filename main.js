@@ -7,6 +7,8 @@
 // @match        *://*/*
 // @grant        none
 // @run-at       document-end
+// @updateURL    https://raw.githubusercontent.com/yqs112358/Fix-code-tag-bug-for-Edge-translator/master/main.js
+// @downloadURL  https://raw.githubusercontent.com/yqs112358/Fix-code-tag-bug-for-Edge-translator/master/main.js
 // ==/UserScript==
 
 (function() {
