@@ -1,9 +1,12 @@
 // ==UserScript==
 // @name         Fix <code> bug for Edge translator
+// @name:zh-CN   Fix <code> bug for Edge translator
 // @namespace    http://tampermonkey.net/
 // @version      1.0
 // @description  Replace <code> tags with styled <span> to fix the bug of Edge's translator.
+// @description:zh-CN  把网页中的所有<code>标签替换成同样式<span>，以修复Edge内置翻译器bug
 // @author       yqs112358
+// @license      MIT
 // @match        *://*/*
 // @grant        none
 // @run-at       document-end
