@@ -4,7 +4,8 @@
 
 ## 介绍
 
-- 油猴脚本，修复Microsoft Edge长期存在的内置翻译器的bug：在翻译时会把所有`<code>`标签都移动到段落的最后，导致文本段完全不可读
+- 一个简单的油猴脚本
+- 修复Microsoft Edge长期存在的内置翻译器的bug：在翻译时会把所有`<code>`标签都移动到段落的最后，导致文本段完全不可读
 - 具体详见：[The translator always move the code tag content to the end - Microsoft Community Hub](https://techcommunity.microsoft.com/t5/discussions/the-translator-always-move-the-code-tag-content-to-the-end/m-p/1906043)
 
 ![before](assets/large.png)
