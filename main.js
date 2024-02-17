@@ -2,43 +2,44 @@
 // @name         Fix <code> bug for Edge translator
 // @name:zh-CN   Fix <code> bug for Edge translator
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1
+// @version      1.0.2
 // @description  Replace <code> tags with styled <span> to fix the bug of Edge's translator.
-// @description:zh-CN  把网页中的所有<code>标签替换成同样式<span>，以修复Edge内置翻译器bug
+// @description:zh-CN  把网页中的所有内联的<code>标签替换成同样式<span>，以修复Edge内置翻译器bug
 // @author       yqs112358
 // @license      MIT
 // @match        *://*/*
 // @grant        none
 // @run-at       document-idle
-// @updateURL    https://raw.githubusercontent.com/yqs112358/Fix-code-tag-bug-for-Edge-translator/master/main.js
-// @downloadURL  https://raw.githubusercontent.com/yqs112358/Fix-code-tag-bug-for-Edge-translator/master/main.js
+// @updateURL    https://raw.githubusercontent.com/yqs112358/EdgeTranslatorBugfix/master/main.js
+// @downloadURL  https://raw.githubusercontent.com/yqs112358/EdgeTranslatorBugfix/master/main.js
 // ==/UserScript==
 
 (function() {
     'use strict';
 
     // Replace a single <code> tag with a same-styled <span>
-    function replaceCodeToSpan(node) {
-        if (node.tagName === 'CODE') {
-            const span = document.createElement('span');
+    function replaceCodeToSpan(codeNode) {
+        // only process <code> without any child element
+        if (codeNode.tagName === 'CODE' && codeNode.children.length === 0) {
+            const spanNode = document.createElement('span');
 
             // Copy all attributes
-            Array.from(node.attributes).forEach(attr => {
-                span.setAttribute(attr.name, attr.value);
+            Array.from(codeNode.attributes).forEach(attr => {
+                spanNode.setAttribute(attr.name, attr.value);
             });
             // Copy all computed styles
-            const computedStyle = window.getComputedStyle(node);
+            const computedStyle = window.getComputedStyle(codeNode);
             for (let key of computedStyle) {
-                span.style[key] = computedStyle[key];
+                spanNode.style[key] = computedStyle[key];
             }
             // Copy InnerHTML
-            span.innerHTML = node.innerHTML;
+            spanNode.innerHTML = codeNode.innerHTML;
 
-            node.parentNode.replaceChild(span, node);
+            codeNode.parentNode.replaceChild(spanNode, codeNode);
         }
     }
 
-    // Process a node and its child for <code> tags
+    // Walkthrough a node and its child to replace <code> tags
     function processNodeAndChild(node) {
         if (node.nodeType === 1) {      // Element node
             node.querySelectorAll('code').forEach(replaceCodeToSpan);
