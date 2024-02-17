@@ -10,8 +10,8 @@
 // @match        *://*/*
 // @grant        none
 // @run-at       document-idle
-// @updateURL    https://raw.githubusercontent.com/yqs112358/EdgeTranslatorBugfix/master/main.js
-// @downloadURL  https://raw.githubusercontent.com/yqs112358/EdgeTranslatorBugfix/master/main.js
+// @updateURL    https://raw.githubusercontent.com/yqs112358/EdgeTranslator-CodeTag-BugFix/master/main.js
+// @downloadURL  https://raw.githubusercontent.com/yqs112358/EdgeTranslator-CodeTag-BugFix/master/main.js
 // ==/UserScript==
 
 (function() {
