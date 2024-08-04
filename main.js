@@ -2,9 +2,9 @@
 // @name         Fix <code> bug for Edge translator
 // @name:zh-CN   Fix <code> bug for Edge translator
 // @namespace    http://tampermonkey.net/
-// @version      1.0.2
-// @description  Replace <code> tags with styled <span> to fix the bug of Edge's translator.
-// @description:zh-CN  把网页中的所有内联的<code>标签替换成同样式<span>，以修复Edge内置翻译器bug
+// @version      1.0.3
+// @description  Fix Edge built-in translator <code> tag misalignment bug
+// @description:zh-CN  修复Edge内置翻译器<code>标签错位bug
 // @author       yqs112358
 // @license      MIT
 // @match        *://*/*
@@ -20,22 +20,12 @@
     // Replace a single <code> tag with a same-styled <span>
     function replaceCodeToSpan(codeNode) {
         // only process <code> without any child element
+        console.log(new Date().toUTCString() + " - replacing <code>");
         if (codeNode.tagName === 'CODE' && codeNode.children.length === 0) {
             const spanNode = document.createElement('span');
-
-            // Copy all attributes
-            Array.from(codeNode.attributes).forEach(attr => {
-                spanNode.setAttribute(attr.name, attr.value);
-            });
-            // Copy all computed styles
-            const computedStyle = window.getComputedStyle(codeNode);
-            for (let key of computedStyle) {
-                spanNode.style[key] = computedStyle[key];
-            }
-            // Copy InnerHTML
-            spanNode.innerHTML = codeNode.innerHTML;
-
-            codeNode.parentNode.replaceChild(spanNode, codeNode);
+            spanNode.setAttribute("translate", "no");
+            codeNode.parentNode.insertBefore(spanNode, codeNode);
+            spanNode.appendChild(codeNode);
         }
     }
 
